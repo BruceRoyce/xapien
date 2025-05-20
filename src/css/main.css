@@ -1,0 +1,245 @@
+html {
+	scroll-behavior: smooth;
+	scroll-snap-type: proximity;
+}
+
+body {
+	font-family: var(--font-geist-sans);
+	background-color: var(--ink);
+}
+
+.main-layout {
+	display: grid;
+	grid-template-columns: 1fr;
+	grid-template-rows: var(--navbar-height, 60px) 1fr;
+	grid-template-areas:
+		"navbar"
+		"main_content";
+}
+
+.navbar {
+	grid-area: navbar;
+}
+.main-content {
+	grid-area: main_content;
+}
+
+main,
+.main {
+	padding: 0;
+	margin: 0 auto;
+}
+
+.container {
+	width: 100%;
+	margin: 0 auto;
+	padding: 1rem;
+	max-width: var(--breakpoint-xl);
+	min-width: var(--min-width);
+}
+
+.tables-wrapper {
+	display: flex;
+	flex-direction: column;
+	gap: 2rem;
+}
+
+/* utils */
+.rounded {
+	border-radius: var(--corner-2);
+}
+
+.mt-1 {
+	margin-top: 1rem;
+}
+.mt-2 {
+	margin-top: 2rem;
+}
+
+.mb-1 {
+	margin-bottom: 1rem;
+}
+.mb-2 {
+	margin-bottom: 2rem;
+}
+
+.drawer-general {
+	--topOffset: 10dvh;
+	--speed: 100ms;
+	--screenHeight: 100dvh;
+	--height: calc(var(--screenHeight) - var(--topOffset));
+
+	position: fixed;
+	bottom: 0;
+	left: 0;
+	width: 100%;
+	height: var(--height);
+	background-color: var(--paper-light);
+	border-top-left-radius: 1.2rem;
+	border-top-right-radius: 1.2rem;
+	z-index: 9000;
+	transition-property: display, transform, opacity, visibility;
+	transition-duration: var(--speed);
+	transition-timing-function: ease-in-out;
+	transform: translateY(var(--screenHeight));
+	transition-behavior: allow-discrete;
+
+	border: 2px solid var(--accent-b-light);
+	box-shadow: 0 -10px 30px 5px var(--shadow-3);
+	animation: slideOutVertical 0.5s cubic-bezier(0.89, 0, 0.22, 1) forwards;
+	&[close] {
+		animation: slideOutVertical 1s cubic-bezier(0.89, 0, 0.22, 1) forwards;
+	}
+	&[open] {
+		animation: slideInVertical 1s cubic-bezier(0.89, 0, 0.22, 1) forwards;
+	}
+
+	.drawer-general-content-wrapper {
+		display: grid;
+		grid-template-columns: 100%;
+		grid-template-rows: 30px 1fr;
+		grid-template-areas: "drawerhandle" "drawercontent";
+	}
+	.drawer-general-handle {
+		grid-area: drawerhandle;
+		display: grid;
+		place-items: center;
+		width: 100%;
+		max-width: 100px;
+		min-width: 50px;
+		height: 4px;
+		margin: auto;
+		border-radius: var(--corner-full);
+		background-color: var(--accent-b-light);
+	}
+	.drawer-general-content {
+		grid-area: drawercontent;
+		.ttl {
+			font-size: 140%;
+			font-weight: 100;
+			color: var(--accent);
+			text-align: center;
+			text-transform: uppercase;
+		}
+		.desc {
+			background-color: var(--paper-dark);
+			font-size: 90%;
+			font-weight: 100;
+			color: var(--slate-3);
+			text-align: center;
+		}
+		#general-drawer-children,
+		.general-drawer-children {
+			color: var(--white);
+			background-color: var(--paper-light);
+			padding: 16px;
+			margin-inline: 8px;
+			font-weight: 200;
+			line-height: 120%;
+			b {
+				font-weight: 800;
+			}
+		}
+	}
+}
+
+.circle-icon-holder {
+	--size: 24px;
+	width: var(--size);
+	height: var(--size);
+	border-radius: 50%;
+	background-color: var(--accent);
+	display: grid;
+	place-items: center;
+
+	svg {
+		width: 75%;
+		height: 75%;
+		fill: var(--ink);
+	}
+
+	&.interactive {
+		cursor: pointer;
+		&:hover {
+			background-color: var(--accent-light);
+		}
+	}
+	&.absolute-right {
+		position: absolute;
+		right: 0;
+		margin: 12px;
+		z-index: 10;
+	}
+}
+
+h1 {
+	font-size: 1.5rem;
+	font-weight: 200;
+	color: var(--white);
+	margin-block: 0 1.5rem;
+	text-align: center;
+}
+
+.everyone {
+	--clr: rgb(51, 89, 122);
+	--hdrclr: rgb(67, 111, 149);
+	color: var(--clr);
+	font-size: 0.85rem;
+	font-weight: 100;
+	margin: 1rem auto;
+	max-width: 300px;
+	b {
+		font-weight: 500;
+	}
+	h1 {
+		color: var(--hdrclr);
+		text-align: unset;
+	}
+	h2 {
+		font-size: 1.2rem;
+		font-weight: 200;
+		color: var(--hdrclr);
+		margin-block: 1.5rem 0.5rem;
+	}
+	h3 {
+		font-size: 1rem;
+		font-weight: 300;
+		color: var(--hdrclr);
+		margin-block: 0.5rem 0.5rem;
+	}
+}
+
+.warning {
+	color: var(--yellow);
+	font-size: 1rem;
+	font-weight: 500;
+	margin: 1rem auto;
+	width: fit-content;
+	text-align: center;
+	border: 1px solid var(--yellow);
+	padding: 0.5rem 1rem;
+}
+
+.flex {
+	display: flex;
+	flex-direction: row;
+	flex-wrap: wrap;
+	align-items: center;
+	justify-content: center;
+	gap: 1rem;
+	&.col {
+		flex-direction: column;
+	}
+}
+
+.credit-roll {
+	text-align: center;
+	color: aquamarine;
+	font-size: 0.85rem;
+	font-weight: 100;
+	margin: 1rem auto;
+	max-width: fit-content;
+	b {
+		font-weight: 500;
+	}
+}

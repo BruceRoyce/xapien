@@ -1,0 +1,78 @@
+@import "./reset.css";
+@import "./main.css";
+@import "./cards.css";
+@import "./buttons.css";
+@import "./forms.css";
+@import "./nav.css";
+@import "./xap-animations.css";
+
+:root {
+	/* Colours */
+	--ink: #0c1824;
+	--ink-dark: #01080f;
+	--paper: #1f2a38;
+	--paper-dark: #1a232e;
+	--paper-light: #2a3545;
+	--accent-b: #6610f2;
+	--accent-b-dark: #42099e;
+	--accent-b-light: #8640f7;
+	--accent: #20c997;
+	--accent-dark: #076448;
+	--accent-light: #0fecaa;
+
+	--text-primary: #f2f6f9;
+
+	--white: #fff;
+
+	--slate-1: #eaedef;
+	--slate-2: #d7dadd;
+	--slate-3: #cdd2d7;
+	--slate-4: #bac1c9;
+	--slate-5: #697480;
+	--slate-6: #343a40;
+
+	--black: #000000;
+
+	--blue: #007bff;
+	--pink: #e83e8c;
+	--red: #dc3545;
+	--orange: #fd7e14;
+	--yellow: #ffc107;
+	--green: #28a745;
+	--teal: #20c997;
+	--cyan: #17a2b8;
+	--success: #28a745;
+	--danger: #dc3545;
+
+	--shadow-1: rgba(0, 0, 0, 0.1);
+	--shadow-2: rgba(0, 0, 0, 0.2);
+	--shadow-3: rgba(0, 0, 0, 0.3);
+	--shadow-4: rgba(0, 0, 0, 0.4);
+	--shadow-5: rgba(0, 0, 0, 0.5);
+
+	--grad-1: linear-gradient(
+		135deg,
+		var(--accent-b-dark) 0%,
+		var(--accent-b) 70%,
+		var(--accent-b-light) 100%
+	);
+
+	--neon-glow: 0 0 20px #6610f2, inset 0 0 50px #42099e50;
+
+	/* Breakpoints */
+	--breakpoint-xs: 0;
+	--breakpoint-sm: 576px;
+	--breakpoint-md: 768px;
+	--breakpoint-lg: 992px;
+	--breakpoint-xl: 1200px;
+	--min-width: 320px;
+
+	/* Vars */
+
+	--corner: 0.5rem;
+	--corner-1: 0.25rem;
+	--corner-2: 0.5rem;
+	--corner-3: 0.75rem;
+	--corner-4: 1rem;
+	--corner-full: 9999px;
+}

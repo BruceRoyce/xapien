@@ -1,0 +1,29 @@
+:root {
+	--navbar-height: 60px;
+}
+.navbar {
+	display: flex;
+	justify-content: flex-start;
+	align-items: center;
+	padding: 1rem;
+	background: var(--ink-dark);
+	position: fixed;
+	width: 100%;
+	z-index: 1000;
+	box-shadow: 0 5px 10px var(--shadow-4);
+	border-bottom: 1px solid var(--paper-light);
+	top: 0;
+	left: 0;
+	max-height: var(--navbar-height, 60px);
+	color: var(--slate-4);
+}
+.nav-row {
+	display: flex;
+	flex-direction: row;
+	justify-content: flex-start;
+	align-items: center;
+	gap: 0.5rem;
+	&.between {
+		justify-content: space-between;
+	}
+}

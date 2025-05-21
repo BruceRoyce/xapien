@@ -34,7 +34,7 @@ const LoginForm = ({
 			if (!auth) {
 				throw { title: "Failed to Login", message: "No response from server" };
 			} else if ("error" in auth) {
-				throw { title: auth?.code || "", message: "Failed to save users" };
+				throw { title: auth?.code || "", message: "Login Faild" };
 			} else if ("user" in auth) {
 				const accessLevel = auth.user.access_level as AccessLevel;
 				setUser(auth.user);
@@ -51,7 +51,7 @@ const LoginForm = ({
 		} catch (err) {
 			const errMsg = err as { title: string; message: string };
 			drawer({
-				drawerTitle: "Failed to save users",
+				drawerTitle: "Login Faild",
 				drawerChild: (
 					<Oops
 						title={errMsg.title}

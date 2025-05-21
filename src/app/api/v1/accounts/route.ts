@@ -31,7 +31,6 @@ export type SuperUserAccountResponsePayload = {
 export async function PATCH(request: Request) {
 	try {
 		const { accountId } = await request.json();
-		console.log("ACCOUNT ID", accountId);
 		const responseData = [] as SuperUserAccountResponsePayload[];
 		const accounts = accountId
 			? await getAccounts({ accountId: parseInt(accountId) })

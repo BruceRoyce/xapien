@@ -60,21 +60,27 @@ input[type="number"] {
 }
 
 .topup-form {
-	input[type="number"] {
-		border: 1px solid var(--accent-dark);
-		border-radius: var(--corner-2);
-		padding: 0.25rem 0.5rem;
-		background-color: var(--slate-2);
-		color: var(--ink);
-		font-size: 0.75rem;
-		font-weight: 400;
-		max-width: 8ch;
-		&:focus {
-			outline: 2px solid var(--accent-light);
-			outline-offset: 2px;
-		}
-		&.bad {
-			border: 2px solid var(--danger);
+	margin: 1rem 0;
+	width: 100%;
+	display: flex;
+	form {
+		width: 100%;
+		input[type="number"] {
+			border: 1px solid var(--accent-dark);
+			border-radius: var(--corner-2);
+			padding: 0.25rem 0.5rem;
+			background-color: var(--slate-2);
+			color: var(--ink);
+			font-size: 0.75rem;
+			font-weight: 400;
+			max-width: 8ch;
+			&:focus {
+				outline: 2px solid var(--accent-light);
+				outline-offset: 2px;
+			}
+			&.bad {
+				border: 2px solid var(--danger);
+			}
 		}
 	}
 }

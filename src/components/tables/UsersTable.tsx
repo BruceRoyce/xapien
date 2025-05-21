@@ -14,6 +14,7 @@ import RowTitle from "@/components/tables/RowTitle";
 import RowAction from "@/components/tables/RowAction";
 import RowTable from "@/components/tables/RowTable";
 import Oops from "@/components/ui/oops";
+import DemoFailCheckbox from "@/components/forms/DemoFailCheckbox";
 
 type UsersTableProps = {
 	users: User[];
@@ -30,34 +31,35 @@ export default function UserTable({
 }: UsersTableProps) {
 	const drawer = useDrawer();
 	const router = useRouter();
+
+	const [fail, setFail] = useState(false);
 	const [localUsers, setUsers] = useState(users);
 	const [isNotSaved, setIsNotSaved] = useState(false);
 
 	async function onSaveChanges() {
-		const saved = await onSave({ users: localUsers });
-		console.log("Saved response", saved);
-		if (!saved) {
-			drawer({
-				drawerTitle: "Failed to save users",
-				drawerChild: <Oops title="Failed to save users" />,
-			});
+		const saved = await onSave({ users: localUsers, failCode: fail ? 500 : 0 });
+		try {
+			if (!saved) {
+				throw { title: "Failed to save users", message: "No response from server" };
+			} else if ("error" in saved) {
+				throw { title: saved?.code || "", message: "Failed to save users" };
+			} else if ("users" in saved) {
+				setIsNotSaved(false);
+				router.refresh();
+			}
 			return;
-		} else if ("error" in saved) {
+		} catch (err) {
+			const errMsg = err as { title: string; message: string };
 			drawer({
 				drawerTitle: "Failed to save users",
 				drawerChild: (
 					<Oops
-						title="Failed to save users"
-						message={saved?.code || ""}
+						title={errMsg.title}
+						message={errMsg.message}
 					/>
 				),
 			});
-			return;
-		} else if ("users" in saved) {
-			setIsNotSaved(false);
-			router.refresh();
 		}
-		return;
 	}
 
 	function handleOnEquliseCredits() {
@@ -144,6 +146,7 @@ export default function UserTable({
 					</>
 				)}
 			</RowTable>
+			<DemoFailCheckbox onChange={setFail} />
 		</>
 	);
 }

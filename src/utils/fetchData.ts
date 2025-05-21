@@ -46,9 +46,7 @@ export default async function fetchData<T>(options: {
 		);
 
 		const res = await fetch(apiUrl, fetchOptions);
-		console.log("------------------------");
-		console.log("RES:", res);
-		console.log("------------------------");
+
 		if (DOES_SHOW_FETCH_LOGS) {
 			console.log("fetch response:", res);
 		}

@@ -53,6 +53,7 @@ export async function GET(request: Request) {
 
 export type UsersUpdateRequestPayload = {
 	users: User[];
+	failCode?: number;
 };
 export type UsersUpdateResponsePayload = {
 	users: User[];

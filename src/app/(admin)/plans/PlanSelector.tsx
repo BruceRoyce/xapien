@@ -33,11 +33,10 @@ export default function PlanSelector({ plans }: { plans: Plan[] }) {
 		if (!selectedPlan) {
 			drawer({
 				drawerChild: (
-					<Oops title="Too early, but no worms here?">
-						<p>
-							Please <b>select a plan first</b> and then click next!
-						</p>
-					</Oops>
+					<Oops
+						title="Missing Plan"
+						message="Please select a plan first and then click next!"
+					/>
 				),
 				drawerTitle: "Plan is not selected",
 			});

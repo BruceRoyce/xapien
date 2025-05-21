@@ -58,16 +58,13 @@ export default function AccountsSelector({ clients, selectorTarget }: AccountSel
 	}, [selectorTarget, setSelectedPlan, setIsTopup]);
 
 	function handleNext() {
-		console.log("handleNext called");
-		console.log("Selected client", selectedClient);
 		if (!selectedClient) {
 			handleDrawer({
 				drawerChild: (
-					<Oops title="You are too early">
-						<p>
-							Please <b>select a client first</b> and then click next!
-						</p>
-					</Oops>
+					<Oops
+						title="Missing target Account (Client)"
+						message="Please select a client first and then click next!"
+					/>
 				),
 				drawerTitle: "Client is not selected",
 			});

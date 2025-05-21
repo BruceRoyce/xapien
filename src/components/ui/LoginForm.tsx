@@ -1,16 +1,16 @@
 "use client";
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 import type { AuthReqPayload, AuthResponsePayload } from "@/api/v1/auth/route";
 import type { FetchReturnType } from "@/types";
 import type { AccessLevel } from "@/store/authSlice";
 
 import Button from "@/components/buttons/Button";
 import FancyCard from "@/components/cards/FancyCard";
+import Oops from "@/components/ui/oops";
 
 import useStore from "@/store/useStore";
 import useDrawer from "@/hooks/useDrawer";
-
-import { useRouter } from "next/navigation";
 
 //
 const LoginForm = ({
@@ -30,31 +30,35 @@ const LoginForm = ({
 		e.preventDefault();
 		const auth = await onSubmit({ emailAddress, password });
 		// this is all unsafe, but we are using it for demo purposes
-		console.log("+*+ auth", auth);
-		if (!auth) {
-			drawer({
-				drawerTitle: "Login Failed",
-				drawerChild: <div>Invalid email or password</div>,
-			});
-			return;
-		} else if ("error" in auth) {
+		try {
+			if (!auth) {
+				throw { title: "Failed to Login", message: "No response from server" };
+			} else if ("error" in auth) {
+				throw { title: auth?.code || "", message: "Failed to save users" };
+			} else if ("user" in auth) {
+				const accessLevel = auth.user.access_level as AccessLevel;
+				setUser(auth.user);
+				setIsAuthenticated(true);
+				setPlanName(auth.planName);
+				setAccount(auth.account);
+				setAccessLevel(accessLevel);
+
+				// super unsafe 😊, but we are merely using it for demo purposes
+				// Never in real life situations
+				router.push("/dashboard");
+				return;
+			}
+		} catch (err) {
+			const errMsg = err as { title: string; message: string };
 			drawer({
 				drawerTitle: "Failed to save users",
-				drawerChild: <div>{auth?.code || ""}</div>,
+				drawerChild: (
+					<Oops
+						title={errMsg.title}
+						message={errMsg.message}
+					/>
+				),
 			});
-			return;
-		} else if ("user" in auth) {
-			const accessLevel = auth.user.access_level as AccessLevel;
-			setUser(auth.user);
-			setIsAuthenticated(true);
-			setPlanName(auth.planName);
-			setAccount(auth.account);
-			setAccessLevel(accessLevel);
-
-			// super unsafe 😊, but we are merely using it for demo purposes
-			// Never in real life situations
-			router.push("/dashboard");
-			return;
 		}
 	};
 

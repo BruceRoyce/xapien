@@ -1,6 +1,6 @@
 import type { SuperUserAccountResponsePayload } from "@/api/v1/accounts/route";
-// import type { UserReqPayload } from "@/api/v1/users/route";
 import type { UsersUpdateRequestPayload, UsersUpdateResponsePayload } from "@/api/v1/users/route";
+
 import fetchData from "@/utils/fetchData";
 import { NEXT_PUBLIC_API_URL as API_URL } from "@/../env";
 
@@ -21,20 +21,12 @@ export default async function Page({
 	const { list } = (await searchParams) as { list: string };
 	const isList = list === "true";
 
-	// const users = await fetchData<User[]>({
-	// 	apiUrl: accountid ? `${API_URL}/users?account_id=${accountid}` : `${API_URL}/users`,
-	// 	method: "get",
-	// 	tag: "users",
-	// });
-
 	const data = await fetchData<SuperUserAccountResponsePayload[]>({
 		apiUrl: `${API_URL}/accounts`,
 		method: "patch",
 		body: { accountId },
 		tag: "accountData",
 	});
-
-	// console.log("Fetched users:", data);
 
 	if (!data || "error" in data) {
 		const msg =
@@ -55,12 +47,12 @@ export default async function Page({
 
 	const client = data[0];
 
-	async function onSaveChanges({ users }: UsersUpdateRequestPayload) {
+	async function onSaveChanges({ users, failCode }: UsersUpdateRequestPayload) {
 		"use server";
 		const data = await fetchData<UsersUpdateResponsePayload>({
 			apiUrl: `${API_URL}/users`,
 			method: "put",
-			body: { users } as UsersUpdateRequestPayload,
+			body: { users, failCode } as UsersUpdateRequestPayload,
 			tag: "accountData",
 		});
 

@@ -18,7 +18,7 @@ type PlansTableProps = {
 
 export default function SetPlan({ placeOrder }: PlansTableProps) {
 	const router = useRouter();
-	const [failCode, setFailCode] = useState(0);
+	const [fail, setFail] = useState(false);
 	const [isError, setIsError] = useState(false);
 	const [topup, $setTopup] = useState(1);
 	const setTopup = (value: number) => {
@@ -30,53 +30,51 @@ export default function SetPlan({ placeOrder }: PlansTableProps) {
 		}
 		$setTopup(() => value);
 	};
-	console.log("Setting topup", topup);
 	const drawer = useDrawer();
-	const { selectedPlan, selectedClient } = useStore();
+	const { selectedPlan, selectedClient, isTopup } = useStore();
 
 	async function handleConfirm() {
 		try {
 			if (!selectedPlan || !selectedClient) {
-				throw new Error("No plan or client selected");
+				throw {
+					title: "Missing mandatory fields",
+					message: "No plan or client selected!",
+				};
 			}
 			const order = await placeOrder({
 				accountId: selectedClient.id,
 				planId: selectedPlan.id,
 				topup,
-				failCode,
+				failCode: fail ? 500 : 0,
 			});
 
 			if (!order) {
-				drawer({
-					drawerTitle: "Order Failed",
-					drawerChild: <Oops title="Failed to save the order and assign credits!" />,
-				});
+				throw {
+					title: "Failed to save the order and assign credits!",
+					message: "Please try again later.",
+				};
 			} else if ("error" in order) {
-				drawer({
-					drawerTitle: "Order Failed",
-					drawerChild: (
-						<Oops
-							title="Failed to place your order - Credits aren't assigned"
-							message={order?.code || ""}
-						/>
-					),
-				});
+				throw {
+					title: order?.code || "",
+					message: "Failed to place your order - Credits aren't assigned",
+				};
 			} else if ("id" in order) {
 				router.push(
 					`/order-confirmation?orderId=${order.id}&accountId=${selectedClient.id}&planId=${selectedPlan.id}`
 				);
 			}
-		} catch (error) {
+		} catch (msg: unknown) {
+			const errMsg = msg as { title?: string; message?: string };
 			drawer({
-				drawerTitle: "Failure",
+				drawerTitle: "Order Failed",
 				drawerChild: (
 					<Oops
-						title="You are early!"
-						message="Please select a client and a plan first."
-					></Oops>
+						title={errMsg.title}
+						message={errMsg.message}
+					/>
 				),
 			});
-			console.info("Error placing order:", error);
+			console.error("Error placing order:", errMsg);
 		}
 	}
 
@@ -85,10 +83,10 @@ export default function SetPlan({ placeOrder }: PlansTableProps) {
 		setIsError(isError);
 		if (isError) {
 			drawer({
-				drawerTitle: "You are early!",
+				drawerTitle: "Something went wrong!",
 				drawerChild: (
 					<Oops
-						title="You are an early person, aren't you?"
+						title="Missing mandatory fields"
 						message="Please select a client and a plan first."
 					/>
 				),
@@ -106,22 +104,33 @@ export default function SetPlan({ placeOrder }: PlansTableProps) {
 			/>
 		);
 	}
+
+	const showTopupOption = isTopup || selectedPlan?.name.toLowerCase() === "top-up";
 	return (
 		<div className="flex col">
-			<GeneralCard title={selectedClient?.name || ""}></GeneralCard>
-			<GeneralCard title={selectedPlan?.name || ""}>
-				<TopupInput
-					topupCredits={topup}
-					onChange={setTopup}
-				/>
+			<GeneralCard title={selectedClient?.name || ""}>
+				<li>Account ID: {selectedClient?.id}</li>
 			</GeneralCard>
+			<GeneralCard
+				title={`${selectedPlan?.name || ""} Plan`}
+				text="Here should be some sort of purchase / payyment flow, but for this test we are just going to add credits to the account."
+			>
+				<li>Plan ID: {selectedPlan?.id}</li>
+				{showTopupOption && (
+					<TopupInput
+						topupCredits={topup}
+						onChange={setTopup}
+					/>
+				)}
+			</GeneralCard>
+
 			<Button
 				label="Confirm Plan"
 				onClick={handleConfirm}
 				variant="primary"
 				size="large"
 			/>
-			<DemoFailCheckbox onChange={(e) => setFailCode(e.target.checked ? 500 : 0)} />
+			<DemoFailCheckbox onChange={setFail} />
 		</div>
 	);
 }

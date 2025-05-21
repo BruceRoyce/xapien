@@ -3,8 +3,12 @@ export default function DemoFailCheckbox({
 	onChange,
 }: {
 	label?: string;
-	onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
+	onChange: (state: boolean) => void;
 }) {
+	const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+		onChange(e.target.checked);
+	};
+
 	return (
 		<label
 			className="fail"
@@ -14,7 +18,7 @@ export default function DemoFailCheckbox({
 			<input
 				id="simulate-fail"
 				type="checkbox"
-				onChange={(e) => onChange(e)}
+				onChange={handleChange}
 			></input>
 		</label>
 	);

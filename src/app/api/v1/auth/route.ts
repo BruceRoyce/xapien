@@ -46,9 +46,9 @@ export async function POST(request: Request) {
 		const isPass = !!password;
 
 		if (!isPass) {
-			throw new XapError(new Error("Failed to create subscription"), {
-				code: "SUBSCRIPTION_CREATION_FAILED",
-				statusCode: 500,
+			throw new XapError(new Error("Missing password"), {
+				code: "NO_PASSWORD",
+				statusCode: 403,
 			});
 		}
 		const user = await getUserByEmailAddress({ userEmailAddress: emailAddress });
@@ -56,12 +56,18 @@ export async function POST(request: Request) {
 		const latestOrder = await getLastPlacedOrder(user.account_id);
 		const plans = await getPlans({ planId: latestOrder.plan_id });
 		let planName = plans[0].name;
-		const subscription = await getSubscriptions({ accountId: user.account_id });
-		const isExpired = checkSubscriptionExpired({ subscription });
-		if (isExpired) {
-			user.credit = 0;
-			planName = "Plan Expired";
-			await updateAccountUsersCreditsByAccountId({ accountId: user.account_id, credit: 0 });
+
+		try {
+			const subscription = await getSubscriptions({ accountId: user.account_id });
+			const isExpired = checkSubscriptionExpired({ subscription });
+			if (isExpired) {
+				user.credit = 0;
+				planName = "Plan Expired";
+				await updateAccountUsersCreditsByAccountId({ accountId: user.account_id, credit: 0 });
+			}
+		} catch (error) {
+			// Handle error if needed
+			console.info("No subscription to expire - ", error);
 		}
 		const accounts = await getAccounts({ accountId: user.account_id });
 

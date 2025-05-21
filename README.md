@@ -119,7 +119,7 @@ At the instalaltion the App will create a Sqlite3 database and seeds it for this
 
 ## Other
 
-To be added
+// todo To be added..
 
 This project uses
 [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to

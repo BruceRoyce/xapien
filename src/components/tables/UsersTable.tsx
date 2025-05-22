@@ -36,7 +36,7 @@ export default function UserTable({
 	const [localUsers, setUsers] = useState(users);
 	const [isNotSaved, setIsNotSaved] = useState(false);
 
-	const { isExceeding, diff, notifyDiff } = useMemo(() => {
+	const { isExceeding, notifyDiff } = useMemo(() => {
 		const { isExceeding, diff } = checkTotalCredits({
 			users: localUsers,
 			totalRemainingCredits,
@@ -49,7 +49,7 @@ export default function UserTable({
 				? `${diff} credit unallocated`
 				: `${Math.abs(diff)} credit exceeding`;
 
-		return { isExceeding, diff, notifyDiff };
+		return { isExceeding, notifyDiff };
 	}, [localUsers, totalRemainingCredits]);
 
 	async function onSaveChanges() {

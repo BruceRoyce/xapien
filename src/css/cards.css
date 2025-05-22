@@ -184,7 +184,13 @@
 	font-size: 1rem;
 	font-weight: 700;
 	padding: 1rem 2rem;
-	/* border-bottom: 1px solid var(--slate-5); */
+	justify-content: space-between;
+	.row-title-info {
+		font-size: 0.75rem;
+		font-weight: 400;
+		color: var(--slate-5);
+		text-transform: none;
+	}
 }
 .row-buttons {
 	background-color: var(--paper-light);

@@ -1,12 +1,12 @@
 "use client";
 import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { useState, useMemo } from "react";
 
 import { type User, FetchReturnType } from "@/types";
 import type { UsersUpdateRequestPayload, UsersUpdateResponsePayload } from "@/api/v1/users/route";
 
 import useDrawer from "@/hooks/useDrawer";
-import { equaliseCredit } from "@/utils/credits";
+import { equaliseCredit, checkTotalCredits } from "@/utils/credits";
 
 import UserRow from "@/components/tables/UserRow";
 import Button from "@/components/buttons/Button";
@@ -35,6 +35,22 @@ export default function UserTable({
 	const [fail, setFail] = useState(false);
 	const [localUsers, setUsers] = useState(users);
 	const [isNotSaved, setIsNotSaved] = useState(false);
+
+	const { isExceeding, diff, notifyDiff } = useMemo(() => {
+		const { isExceeding, diff } = checkTotalCredits({
+			users: localUsers,
+			totalRemainingCredits,
+		});
+
+		const notifyDiff =
+			diff === 0
+				? "All credits allocated"
+				: diff > 0
+				? `${diff} credit unallocated`
+				: `${Math.abs(diff)} credit exceeding`;
+
+		return { isExceeding, diff, notifyDiff };
+	}, [localUsers, totalRemainingCredits]);
 
 	async function onSaveChanges() {
 		const saved = await onSave({ users: localUsers, failCode: fail ? 500 : 0 });
@@ -79,7 +95,6 @@ export default function UserTable({
 			});
 		});
 		setIsNotSaved(changeFlag);
-		// client.totalRemainingCredits - creditsPerUser * client.users.length - remainingCredits;
 	}
 
 	function handleRowCreditChange(userId: number) {
@@ -108,7 +123,10 @@ export default function UserTable({
 		<>
 			{isNotSaved && <div className="warning">⚠️ You got unsaved changes!</div>}
 			<RowTable>
-				<RowTitle title="Users" />
+				<RowTitle
+					title="Users"
+					note={notifyDiff}
+				/>
 				{localUsers.map((user) => {
 					return (
 						<UserRow
@@ -119,7 +137,7 @@ export default function UserTable({
 							tabIndex={user.id}
 							avatarUrl={"/people/user.png"}
 							onCreditChange={handleRowCreditChange(user.id)}
-							isInputBad={false}
+							isInputBad={isExceeding}
 							isListOnly={isListOnly}
 						/>
 					);
